@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+    <meta http-equiv="" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <!-- Your app title -->
+    <title>My App</title>
+
+    <!-- This template defaults to the iOS CSS theme. To support both iOS and material design themes, see the Framework7 Tutorial at the link below:
+        http://www.idangero.us/framework7/tutorials/maintain-both-ios-and-material-themes-in-single-app.html
+     -->
+
+    <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
+    <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
+
+    <link rel="stylesheet" href="css/styles.css">
+
+
+     <link rel="apple-touch-icon" href="https://bootstraptemplatedesign.com/demo-application/overux/bootstrap_dashboard_html/img/f7-icon-square.png">
+    <link rel="icon" href="https://bootstraptemplatedesign.com/demo-application/overux/bootstrap_dashboard_html/img/f7-icon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./Overux_files/bootstrap.min.css">
+
+    <!-- Material design icons CSS -->
+    <link rel="stylesheet" href="./Overux_files/material-icons.css">
+
+    <!-- swiper carousel CSS -->
+    <link rel="stylesheet" href="./Overux_files/swiper.min.css">
+
+
+    <!-- app CSS -->
+    <link id="theme" rel="stylesheet" href="./Overux_files/style.css" type="text/css">
+     <script type="text/javascript" charset="utf-8">
+
+    // Wait for device API libraries to load
+    //
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+    }
+
+    // device APIs are available
+    //
+    function onDeviceReady() {
+        // Register the event listener
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    // Handle the back button
+
+    function onBackKeyDown() {
+    }
+
+    </script>
+</head>
+
+<body onload="onLoad()" class="color-theme-blue" style="background-color: #4e54c8;">
+    <!-- Status bar overlay for full screen mode (PhoneGap) -->
+    <div class="statusbar-overlay"></div>
+
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p>Left panel content goes here</p>
+        </div>
+    </div>
+
+    <!-- Views -->
+    <div class="views">
+        <!-- Your main view, should have "view-main" class -->
+        <div class="view view-main">
+            <!-- Top Navbar-->
+            <div class="navbar">
+                <div class="navbar-inner">
+                    
+                    <div class="center sliding">Awesome App</div>
+                    <div class="right">
+                    
+                        <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+            <div class="pages navbar-through toolbar-through">
+                <!-- Page, "data-page" contains page name -->
+                <div data-page="index" class="page">
+                    <!-- Scrollable page content -->
+                    <div class="page-content">
+                        <div class="content-block">
+                            <div class="wrapper">
+        <!-- page main start -->
+        <div class="page">
+            <div class="page-content h-100">
+                <div class="background theme-header">
+                <div class="row mx-0 h-100 justify-content-center">
+                    <div class="col-10 col-md-6 col-lg-4 my-3 mx-auto text-center align-self-center">
+                        <img src="./Overux_files/logo-w.png" style="    opacity: 1;
+    width: 20%;" alt="" class="login-logo">
+                        <br>
+                        <br>
+                        <h5 class="text-white mb-4">Register with us</h5>
+                        <br>
+                        <form action="post" id="candidate_register">
+                        <div class="login-input-content ">
+                            <div class="form-group">
+                                <input type="text" id="fname" name="fname" required validate class="form-control rounded text-center" placeholder="First Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="lname" name="lname" required validate class="form-control rounded text-center" placeholder="Last Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" id="number" name="mobile" required validate pattern="[0-9]*" data-error-message="Only numbers please!" class="form-control rounded text-center" placeholder="Phone number">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="userid" name="username" class="form-control rounded text-center" placeholder="User Id" required validate>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="pass" name="password" class="form-control rounded text-center" placeholder="Password" required validate>
+                                <input type="hidden" id="secrete" name="secrete" value="Penisking" class="form-control rounded ">
+                            </div>
+                            <a href="#" id="submitdata" class="btn btn-block btn-success rounded border-0 z-3">Sign Up</a>
+                            <a href="about.html" class="md-trigger" id="changepage" >btn</a>
+                        </div>       
+                        </form>          
+                    </div>
+                </div>
+            </div>
+        
+              <!--    <ul id='list'></ul> -->
+
+            </div>
+
+        </div>
+        <!-- page main ends -->
+
+    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom Toolbar-->
+          <!--   <div class="toolbar">
+                <div class="toolbar-inner">
+                   
+                    <a href="#" class="link">Link 1</a>
+                    <a href="#" class="link">Link 2</a>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
+    <script type="text/javascript" src="js/my-app.js"></script>
+    <script src="./Overux_files/jquery-3.2.1.min.js.download"></script>
+
+
+    <script src="./Overux_files/popper.min.js.download"></script>
+    <script src="./Overux_files/bootstrap.min.js.download"></script>
+
+    <!-- Cookie jquery file -->
+    <script src="./Overux_files/jquery.cookie.js.download"></script>
+
+    <!-- sparklines chart jquery file -->
+    <script src="./Overux_files/jquery.sparkline.min.js.download"></script>
+
+    <!-- Circular progress gauge jquery file -->
+    <script src="./Overux_files/circle-progress.min.js.download"></script>
+
+    <!-- Swiper carousel jquery file -->
+    <script src="./Overux_files/swiper.min.js.download"></script>
+
+    <!-- Application main common jquery file -->
+    <script src="./Overux_files/main.js.download"></script>
+
+    <script type="text/javascript" charset="utf-8">
+
+             document.addEventListener("deviceready", onDeviceReady, true);
+
+             function onDeviceReady()
+             {     
+                   document.addEventListener("backbutton", BackKeyDown, true);
+             }
+
+             function BackKeyDown()
+             {
+                 navigator.notification.alert();
+                 //navigator.app.exitApp();  // For Exit Application
+             }
+        </script>
+</body>
+
+</html>
