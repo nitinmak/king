@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
     <!--
         Customize this policy to fit your own app's needs. For more guidance, see:
@@ -13,12 +13,14 @@
     <meta http-equiv="" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
 
     <!-- Required meta tags-->
+      <splash src="res/screen/android/splash-land-xhdpi.png" density="land-xhdpi"/>
+      
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-    <!-- <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no"> -->
+    <meta name="msapplication-tap-highlight" content="no">
 
     <!-- Your app title -->
     <title>My App</title>
@@ -48,38 +50,9 @@
 
     <!-- app CSS -->
     <link id="theme" rel="stylesheet" href="./Overux_files/style.css" type="text/css">
-     <script type="text/javascript" charset="utf-8">
-
-    // Wait for device API libraries to load
-    //
-    function onLoad() {
-        document.addEventListener("deviceready", onDeviceReady, false);
-    }
-
-    // device APIs are available
-    //
-    function onDeviceReady() {
-        // Register the event listener
-        document.addEventListener("backbutton", onBackKeyDown, false);
-    }
-
-    // Handle the back button
-
-    function onBackKeyDown() {
-         e.preventDefault();
-        navigator.notification.confirm("Are you sure you want to exit ?", onConfirm, "Confirmation", "Yes,No"); 
-    }
-    function onConfirm(button) {
-        if(button==2){//If User selected No, then we just do nothing
-            return;
-        }else{
-            localStorage.setItem("user_id", "");
-            navigator.app.exitApp();// Otherwise we quit the app.
-        }
-    </script>
 </head>
 
-<body onload="onLoad()" class="color-theme-blue" style="background-color: #4e54c8;">
+<body class="color-theme-blue" style="    background-color: #4e54c8;">
     <!-- Status bar overlay for full screen mode (PhoneGap) -->
     <div class="statusbar-overlay"></div>
 
@@ -97,16 +70,19 @@
         <!-- Your main view, should have "view-main" class -->
         <div class="view view-main">
             <!-- Top Navbar-->
-            <div class="navbar">
-                <div class="navbar-inner">
-                    
-                    <div class="center sliding">Awesome App</div>
-                    <div class="right">
-                    
-                        <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
-                    </div>
-                </div>
-            </div>
+            <div class="navbar" style="background-color: #4e54c8;">
+   
+</div>
+<style type="text/css">
+    .navbar:after{
+       background-color: #4e54c8;
+    }
+    #myOverlay{position:absolute;height:100%;width:100%;}
+#myOverlay{background:white;opacity:.9;z-index:2;display:none;}
+
+#loadingGIF{position:absolute;top:34%;left:25%;z-index:3;display:none;}
+</style>
+            <!--  -->
             <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
             <div class="pages navbar-through toolbar-through">
                 <!-- Page, "data-page" contains page name -->
@@ -146,12 +122,14 @@
                                 <input type="hidden" id="secrete" name="secrete" value="Penisking" class="form-control rounded ">
                             </div>
                             <a href="#" id="submitdata" class="btn btn-block btn-success rounded border-0 z-3">Sign Up</a>
-                            <a href="about.html" class="md-trigger" id="changepage" >btn</a>
+                            <a href="about.html" id="home"></a>
                         </div>       
                         </form>          
                     </div>
                 </div>
             </div>
+              <div id="myOverlay"></div>
+<div id="loadingGIF"><img src="img/loader_khusir.gif" /><br><p style="text-align: center;">Please Wait</p></div>
         
               <!--    <ul id='list'></ul> -->
 
@@ -161,6 +139,7 @@
         <!-- page main ends -->
 
     </div>
+    
                         </div>
                     </div>
                 </div>
@@ -179,7 +158,11 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
     <script type="text/javascript" src="js/my-app.js"></script>
+    <script type="text/javascript" src="js/translate.js"></script>
     <script src="./Overux_files/jquery-3.2.1.min.js.download"></script>
+    <script type="text/javascript">
+google.load("elements", "1", {packages: "transliteration"});
+</script> 
 
 
     <script src="./Overux_files/popper.min.js.download"></script>
@@ -199,22 +182,6 @@
 
     <!-- Application main common jquery file -->
     <script src="./Overux_files/main.js.download"></script>
-
-    <script type="text/javascript" charset="utf-8">
-
-             document.addEventListener("deviceready", onDeviceReady, true);
-
-             function onDeviceReady()
-             {     
-                   document.addEventListener("backbutton", BackKeyDown, true);
-             }
-
-             function BackKeyDown()
-             {
-                 navigator.notification.alert();
-                 //navigator.app.exitApp();  // For Exit Application
-             }
-        </script>
 </body>
 
 </html>
