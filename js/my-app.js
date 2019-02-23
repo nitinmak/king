@@ -268,7 +268,7 @@ $$(document).on('deviceready', function() {
                                 // alert(val);
                                     // console.log("INSERT INTO data_master ("+k+") VALUES ("+val+")");
                                    tx.executeSql("INSERT INTO data_master ("+k+") VALUES ("+val+")");
-
+                                    $$('#home').trigger("click");
                           
                         });
                                   
