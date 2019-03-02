@@ -29,8 +29,8 @@
     
     <plugin name="cordova-plugin-console" spec="~1.1.0" />
   
-    <plugin name="cordova-plugin-media" spec="~5.0.2" />
-    <plugin name="cordova-plugin-media-capture" spec="~3.0.2" />
+    <plugin name="cordova-plugin-media" spec="~6.3.0" />
+    <plugin name="cordova-plugin-media-capture" spec="~6.3.0" />
     <plugin name="cordova-plugin-network-information" spec="~2.0.1" />
     <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
     <plugin name="cordova-plugin-vibration" spec="~3.1.0" />
