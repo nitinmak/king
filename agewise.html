@@ -7,7 +7,7 @@
             <a href="#" class="back link">
                 <i class="icon icon-back mr-3"></i>
                <!--  <span>Back</span> -->
-                <div class=" sliding " style="color: white">Namewise List</div>
+                <div class=" sliding " style="color: white">Agewise List</div>
             </a>
         </div>
        
@@ -61,7 +61,7 @@ input.placeholder {
 
 
 <div class="pages">
-    <div data-page="namewise" class="page" >
+    <div data-page="agewise" class="page" >
         <div class="page-content" style="padding-top: 43px !important">
             <div class="content-block" style="margin: 0px !important">
       
@@ -72,26 +72,26 @@ input.placeholder {
     <!-- Each "cell" has col-[width in percents] class -->
   <!-- style="box-shadow: 0 0 0 1px hsl(0, 0%, 80%), 0 0 0 1px hsl(0, 0%, 90%); border-radius: 20%;" -->
     <div class="col text-center    p-1" >
-      <input type="text" name="lname"  class="form-control rounded text-center" onkeyup="start_search();" id="last_name"  style="width: 100%;" placeholder="Last Name">
+      <input type="text" name="lname"  class="form-control rounded text-center" onkeyup="start_search('alpha');" id="last_name"  style="width: 100%;" placeholder="Last Name">
 
     
     </div>
    <div class="col text-center    p-1" >
-      <input type="text"name="voter_name"   class="form-control rounded text-center"  onkeyup="start_search();" id="voter_name"  style="width: 100%;" placeholder="First Name">
+      <input type="text"name="voter_name"   class="form-control rounded text-center"  onkeyup="start_search('alpha');" id="voter_name"  style="width: 100%;" placeholder="First Name">
     
     </div>
     <div class="col text-center    p-1" >
-      <input type="text" name="relation_name" onkeyup="start_search();"  class="form-control rounded text-center"  style="width: 100%;" id="relation_name" placeholder="Midel Name">
+      <input type="text" name="relation_name" onkeyup="start_search('alpha');"  class="form-control rounded text-center"  style="width: 100%;" id="relation_name" placeholder="Midel Name">
     
     </div>
   </div>
-    <div class="row pt-0 pr-3 pl-3 pb-3"  >
+    <div class="row pt-0 pr-3 pl-3 pb-1"  >
     <div class="col text-center    pt-0 pr-1 pl-1" >
-      <input type="text" name="card_no" id="card_no" onkeyup="start_search();" class="form-control rounded text-center"  style="width: 100%" placeholder="Card No">
+      <input type="text" name="card_no" id="card_no" onkeyup="start_search('alpha');" class="form-control rounded text-center"  style="width: 100%" placeholder="Card No">
     
     </div>
    <div class="col text-center    pt-0 pr-1 pl-1" >
-      <input type="text" name="booth_no" onkeyup="start_search();" class="form-control rounded text-center" id="booth_no"  style="width: 100%" placeholder="Booth No">
+      <input type="text" name="booth_no" onkeyup="start_search('alpha');" class="form-control rounded text-center" id="booth_no"  style="width: 100%" placeholder="Booth No">
     
     </div>
     <div class="col text-center    pt-0 pr-1 pl-1" >
@@ -99,6 +99,31 @@ input.placeholder {
     
     </div>
 </div>
+    <div class="row pt-0 pr-3 pl-3 pb-3"  >
+
+<div class="col text-center    pt-0 pr-1 pl-1" >
+      <input type="text" name="fname"  class="form-control rounded text-center"  style="width: 100%" placeholder="From Age">
+    
+    </div>
+    <div class="col text-center    pt-0 pr-1 pl-1" >
+      <input type="text" name="fname"  class="form-control rounded text-center"  style="width: 100%" placeholder="To Age">
+    
+    </div>
+     <div class="col text-center    p-2" >
+     <label class="radio-inline">
+      <input type="radio"  class=" rounded text-center" name="optradio" checked>F
+    </label>
+    <label class="radio-inline">
+      <input type="radio" name="optradio">M
+    </label>
+    <label class="radio-inline">
+      <input type="radio" name="optradio">Both
+    </label>
+    
+    </div>
+</div>
+
+
     <div class="container" style="max-width: 70%;">
   <div class="row pt-0 pb-3 pl-0 pr-1"  >
     <div class="col">

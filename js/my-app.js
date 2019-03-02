@@ -15,9 +15,12 @@ var mainView = myApp.addView('.view-main', {
 
 var db = window.openDatabase("tutorialdb", "1.0", "tutorial database", 20000); //will create database tutorialdb or open it
         document.addEventListener("deviceready", onDeviceReady, false);
-        
+  
         function onDeviceReady() {
 
+document.addEventListener("backbutton", function (e) {
+            e.preventDefault();
+        }, false );
             // Create Table
             db.transaction(populateDB, errorCB, successCB);
 
@@ -58,20 +61,46 @@ var db = window.openDatabase("tutorialdb", "1.0", "tutorial database", 20000); /
             }, errorCB, successCB);
 
         }
-        function start_search(){
+        function start_data_search(){
+          var flt = window.localStorage.getItem('select_caste');
+            var fld =  $$('#data_type').val();
+            var votername =  $$('#voter_name').val();
+          var last_name =  $$('#last_name').val();
+          var relation_name =  $$('#relation_name').val();
+          var card_no =  $$('#card_no').val();
+          var booth_no =  $$('#booth_no').val();
+          if(window.localStorage.getItem('select_caste') ){
+           
+             var flt = window.localStorage.getItem('select_caste');
+          }else if(window.localStorage.getItem('select_address') ){
+             var flt = window.localStorage.getItem('select_address');
+
+          }else{
+             var flt = window.localStorage.getItem('filter');
+
+          }
+
+          // alert(fld);alert(flt);
+
+
+      fetch_data_list(fld,flt,votername,last_name,relation_name,card_no,booth_no);
+          
+        }
+        function start_search(flt = 0){
           var votername =  $$('#voter_name').val();
           var last_name =  $$('#last_name').val();
           var relation_name =  $$('#relation_name').val();
           var card_no =  $$('#card_no').val();
           var booth_no =  $$('#booth_no').val();
          
-          fetchData(votername,last_name,relation_name,card_no,booth_no);
+          fetchData(flt,votername,last_name,relation_name,card_no,booth_no);
         }
 
 
-         function fetchData(votername = 0,last_name = 0,relation_name = 0,card_no = 0,booth_no = 0){
+         function fetchData(filter = 0,votername = 0,last_name = 0,relation_name = 0,card_no = 0,booth_no = 0){
             // alert(votername);
             var where = 'where 1 = 1';
+            var flt = '';
             if(votername != '' && votername != 0){
                 where += ' and';
                  where += " voter_name like '"+votername+"%' ";
@@ -94,15 +123,30 @@ var db = window.openDatabase("tutorialdb", "1.0", "tutorial database", 20000); /
                where += ' and';
                  where += " booth_no like '"+booth_no+"%' ";
             }
+            if(filter != 0 && filter != ''){
+              if(filter == 'alpha'){
+              flt += ' GROUP BY voter_name ORDER BY voter_name ASC';
+              }
+            }
             // alert(where);
             db.transaction(function(tx){
-// alert('select * from data_master '+where+' ');
+// alert('select * from data_master '+where+' '+flt+' ');
                
-                tx.executeSql("select * from data_master "+where+" ",[],function(tx1,result){
+// SELECT DISTINCT class FROM student 
+// SELECT
+//  *,
+//  count(*)
+// FROM
+//  tracks
+// GROUP BY
+//  albumid;
+                tx.executeSql("select * from data_master "+where+" "+ flt +" ",[],function(tx1,result){
                     var len = result.rows.length;
                     if(len > 0){
                         $('#data').html('');
+                        var j = 0
                            for (var i=0; i<len; i++){
+                            j++;
                         // var photo = result.rows.item(i).photo;
                         var photo = 'photo.jpg';
                         var sr_no = result.rows.item(i).sr_no;
@@ -114,7 +158,7 @@ var db = window.openDatabase("tutorialdb", "1.0", "tutorial database", 20000); /
 
                         var ul = document.getElementById("data");
                          
-   var data = '<div class="row pt-1 pb-0 pl-3 pr-2 " style="border-bottom:groove;"  ><div class="col  p-1 text-center">'+photo+'</div><div class="col p-1 text-center">'+sr_no+'</div><div class="col p-1 text-center">'+house_no+'</div><div class="col p-1 text-cente">'+voter_name+'</div><div class="col p-1 text-center">'+gender+'</div><div class="col p-1 text-center">'+age+'</div></div>';
+   var data = '<div class="row pt-1 pb-0 pl-3 pr-2 " style="border-bottom:groove;"  ><div class="col  p-1 text-center">'+photo+'</div><div class="col p-1 text-center">'+j+'</div><div class="col p-1 text-center">'+house_no+'</div><div class="col p-1 text-center">'+voter_name+'</div><div class="col p-1 text-center">'+gender+'</div><div class="col p-1 text-center">'+age+'</div></div>';
                         // var li = document.createElement("data");
                         // li.appendChild(document.createTextNode(voter_name));
                         // ul.appendChild(data);
@@ -131,6 +175,298 @@ var db = window.openDatabase("tutorialdb", "1.0", "tutorial database", 20000); /
             }, errorCB, successCB);
         }
      
+function search_address(){
+ var address =  $$('#address').val(); 
+ fetchData_addresswise(address);
+}
+function filter_data(filter = 0,search = 0){
+var where = 'where 1 = 1';
+            var flt = '';
+            if(search != '' && search != 0){
+                where += ' and';
+                
+                 where += " "+filter+" like '"+search+"%' ";
+                
+            }
+            var sql = "select DISTINCT "+filter+" as filter ,sr_no,count(*) as total from data_master "+where+" GROUP BY "+filter+" ";
+            // alert(filter);
+            // alert(sql);
+    db.transaction(function(tx){
+
+                tx.executeSql(sql,[],function(tx1,result){
+                    var len = result.rows.length;
+                    // alert(filter)
+                    if(len > 0){
+                        $('#data').html('');
+                        var  j = 0;
+                           for (var i=0; i<len; i++){
+                            j++;
+                        // var photo = result.rows.item(i).photo;
+                        // var photo = 'photo.jpg';
+                        var sr_no = result.rows.item(i).sr_no;
+                        var filter = result.rows.item(i).filter;
+                        // alert(filter);
+                        var total = result.rows.item(i).total;
+                        // var gender = result.rows.item(i).gender;
+                        // var voter_name = result.rows.item(i).voter_name;
+                        // var age = result.rows.item(i).age;
+// if(!address){
+//   // alert('df');
+// $('#data').html('<h5 class="text-center">No Record Found..!</h5>'); 
+                   
+//                       }else{
+      var ul = document.getElementById("data");
+                          if(filter){
+
+                      var cls = 'row pt-1 pb-0 pl-3 pr-2 filter_click';
+              var did = filter;   
+              var v = filter;                     
+
+                         }else{
+                     var cls = 'row pt-1 pb-0 pl-3 pr-2 filter_click';
+              var did = 'Not Mentioned'; 
+              var v = 'Not Mentioned';                     
+
+
+
+                         }
+   var data = '<div  class="'+cls+'" style="border-bottom:groove;    font-size: 15px;"  data-id="'+did+'" ><div class="col p-1 text-center">'+j+'</div><div class="col p-1 text-center">'+v+'</div><div class="col p-1 text-center">'+total+'</div></div>';
+   // var data = '<div class="row pt-1 pb-0 pl-3 pr-2 address_click " style="border-bottom:groove;"  data-id="'+address+'" ><div class="col p-1 text-center">'+sr_no+'</div><div class="col p-1 text-center">'+address+'</div><div class="col p-1 text-center">'+total+'</div></div>';
+                        // var li = document.createElement("data");
+                        // li.appendChild(document.createTextNode(voter_name));
+                        // ul.appendChild(data);
+                        
+
+                        $('#data').append(data);
+// }
+}
+  
+                    
+                    
+                    }else{
+                       $('#data').html('<h5 class="text-center">No Record Found..!</h5>');  
+                    }
+                 
+                },errorCB);
+            }, errorCB, successCB);
+        }
+
+
+        function fetchData_addresswise(address = 0){
+var where = 'where 1 = 1';
+            var flt = '';
+            if(address != '' && address != 0){
+                where += ' and';
+                 where += " address like '"+address+"%' ";
+            }
+            var sql = "select DISTINCT address,sr_no,count(*) as total from data_master "+where+" GROUP BY address ";
+            // alert(sql);
+    db.transaction(function(tx){
+
+                tx.executeSql(sql,[],function(tx1,result){
+                    var len = result.rows.length;
+                    // alert(len)
+                    if(len > 0){
+                        $('#data').html('');
+                        var j = 0;
+                           for (var i=0; i<len; i++){
+                            j++;
+                        // var photo = result.rows.item(i).photo;
+                        // var photo = 'photo.jpg';
+                        var sr_no = result.rows.item(i).sr_no;
+                        var address = result.rows.item(i).address;
+                        // alert(address);
+                        var total = result.rows.item(i).total;
+                        // var gender = result.rows.item(i).gender;
+                        // var voter_name = result.rows.item(i).voter_name;
+                        // var age = result.rows.item(i).age;
+// if(!address){
+//   // alert('df');
+// $('#data').html('<h5 class="text-center">No Record Found..!</h5>'); 
+                   
+//                       }else{
+      var ul = document.getElementById("data");
+                          if(address){
+
+                      var cls = 'row pt-1 pb-0 pl-3 pr-2 address_click';
+              var did = address;   
+              var v = address;                     
+
+                         }else{
+                     var cls = 'row pt-1 pb-0 pl-3 pr-2 address_click';
+              var did = 'Not Mentioned'; 
+              var v = 'Not Mentioned';                     
+
+
+
+                         }
+   var data = '<div  class="'+cls+'" style="border-bottom:groove;    font-size: 15px;"  data-id="'+did+'" ><div class="col p-1 text-center">'+j+'</div><div class="col p-1 text-center">'+v+'</div><div class="col p-1 text-center">'+total+'</div></div>';
+   // var data = '<div class="row pt-1 pb-0 pl-3 pr-2 address_click " style="border-bottom:groove;"  data-id="'+address+'" ><div class="col p-1 text-center">'+sr_no+'</div><div class="col p-1 text-center">'+address+'</div><div class="col p-1 text-center">'+total+'</div></div>';
+                        // var li = document.createElement("data");
+                        // li.appendChild(document.createTextNode(voter_name));
+                        // ul.appendChild(data);
+                        
+
+                        $('#data').append(data);
+// }
+}
+  
+                    
+                    
+                    }else{
+                       $('#data').html('<h5 class="text-center">No Record Found..!</h5>');  
+                    }
+                 
+                },errorCB);
+            }, errorCB, successCB);
+        }
+
+function fetch_data_list(fld = '',flt = 0,votername = 0,last_name = 0,relation_name = 0,card_no = 0,booth_no = 0){
+  // alert(fld);
+  // alert(flt);
+  var where = 'where 1 = 1';
+            // var flt = '';
+            if(flt != '' && flt != 0){
+                where += ' and ';
+                if(flt == 'Not Mentioned'){
+                 where += " "+fld+" =  '' ";
+                }else{
+                 where += " "+fld+" =  '"+flt+"' ";
+
+                }
+            }
+              if(votername != '' && votername != 0){
+                where += ' and';
+                 where += " voter_name like '"+votername+"%' ";
+            }
+             if(last_name != '' && last_name != 0){
+               where += ' and';
+                 where += " surname like '"+last_name+"%' ";
+            }
+              if(relation_name != '' && relation_name != 0){
+               where += ' and';
+                 where += " relation_name like '"+relation_name+"%' ";
+            }
+
+            if(card_no != '' && card_no != 0){
+               where += ' and';
+                 where += " card_no like '"+card_no+"%' ";
+            }
+
+            if(booth_no != '' && booth_no != 0){
+               where += ' and';
+                 where += " booth_no like '"+booth_no+"%' ";
+            }
+            var sql = "select * from data_master "+where+" ";
+            // alert(sql);
+                    db.transaction(function(tx){
+
+                tx.executeSql(sql,[],function(tx1,result){
+                    var len = result.rows.length;
+                    if(len > 0){
+                      // alert(len);
+                        $('#data_list').html('');
+                        var j =0;
+                           for (var i=0; i<len; i++){
+                             j++;
+                        // var photo = result.rows.item(i).photo;
+                        var photo = 'photo.jpg';
+                        var sr_no = result.rows.item(i).sr_no;
+                        // alert(sr_no);
+                        var house_no = result.rows.item(i).house_no;
+                        var mobile = result.rows.item(i).mobile;
+                        var gender = result.rows.item(i).gender;
+                        var voter_name = result.rows.item(i).voter_name;
+                        var age = result.rows.item(i).age;
+
+                        var ul = document.getElementById("data");
+                         
+   var data = '<div class="row pt-1 pb-0 pl-3 pr-2 " style="border-bottom:groove;"  ><div class="col  p-1 text-center">'+photo+'</div><div class="col p-1 text-center">'+j+'</div><div class="col p-1 text-center">'+house_no+'</div><div class="col p-1 text-center">'+voter_name+'</div><div class="col p-1 text-center">'+gender+'</div><div class="col p-1 text-center">'+age+'</div></div>';
+                      
+                        // alert(data);
+
+                        $('#data_list').append(data);
+                    }
+                    
+                    }else{
+                       $('#data_list').html('<h5 class="text-center">No Record Found..!</h5>');  
+                    }
+                 
+                },errorCB);
+            }, errorCB, successCB);
+}
+
+function search_castewise(){
+ var caste =  $$('#caste').val(); 
+ // alert(caste);
+ fetchData_castewise(caste);
+}
+
+
+
+function fetchData_castewise(caste = 0){
+  
+var where = 'where 1 = 1';
+            var flt = '';
+            if(caste != '' && caste != 0){
+                where += ' and';
+                 where += " caste like '"+caste+"%' ";
+            }
+         
+
+            var sql = "select DISTINCT caste,sr_no,count(*) as total from data_master "+where+" GROUP BY caste ";
+            
+            // alert(sql);
+    db.transaction(function(tx){
+
+                tx.executeSql(sql,[],function(tx1,result){
+                    var len = result.rows.length;
+                    // alert(len)
+                    if(len > 0){
+                      // var data = '';
+                        $('#data').html('');
+                        var j = 0;
+                           for (var i=0; i<len; i++){
+                   j++;
+                        var sr_no = result.rows.item(i).sr_no;
+                        var caste = result.rows.item(i).caste;
+                        // alert(caste);
+                        var total = result.rows.item(i).total;
+                
+      var ul = document.getElementById("data");
+                         var vals = "'"+caste+"'";
+                         if(caste){
+
+                      var cls = 'row pt-1 pb-0 pl-3 pr-2 caste_click';
+              var did = caste;   
+              var v = caste;                     
+
+                         }else{
+                        var cls = 'row pt-1 pb-0 pl-3 pr-2 caste_click';
+              var did = 'Not Mentioned'; 
+              var v = 'Not Mentioned';                     
+
+
+
+                         }
+   var data = '<div  class="'+cls+'" style="border-bottom:groove;    font-size: 15px;"  data-id="'+did+'" ><div class="col p-1 text-center">'+j+'</div><div class="col p-1 text-center">'+v+'</div><div class="col p-1 text-center">'+total+'</div></div>';
+// data += '<div  class="row pt-1 pb-0 pl-3 pr-2 caste_click" style="border-bottom:groove;    font-size: 15px;"  data-id="Not Mentioned" ><div class="col p-1 text-center">'+sr_no+'</div><div class="col p-1 text-center">Not Mentioned</div><div class="col p-1 text-center">'+total+'</div></div>';
+                        $('#data').append(data);
+
+}
+  
+                    
+                    
+                    }else{
+                       $('#data').html('<h5 class="text-center">No Record Found..!</h5>');  
+                    }
+                 
+                },errorCB);
+            }, errorCB, successCB);
+        }
+
+
+
         function insertData(){
 
             // Insert record
@@ -179,24 +515,6 @@ $$(document).on('deviceready', function() {
     $('#loadingGIF').hide(); }, 300);
 
 
-        db.transaction(function(tx){
-                //var sql = "INSERT INTO data_mddaster (user_id,constituency_id,pc_name,ac_name,mnc,zp,pc,gp,part_no,ward_no,booth_no,booth_name,sr_no,photo,voter_name,mobile_no,relation_name,surname,relation_type,gender,age,house_no,epic_id,card_no,address,village_name,booth_address,society,bibhag,old_town,caste,support,blood_group,education,occupation,birth_date,marriage_date,email,adhar,ration_card,dead,lastModified user_id,constituency_id  , pc_name  , ac_name  , mnc  , zp  , pc  , gp  , part_no  , ward_no  , booth_no  , booth_name  , sr_no  , photo  , voter_name  , mobile_no  , relation_name  , surname  , relation_type  , gender  , age  , house_no  , epic_id  , card_no  , address  , village_name  , booth_address  , society  , bibhag  , old_town  , caste  , support  , blood_group  , education  , occupation  , birth_date  , marriage_date  , email  , adhar  , ration_card  , dead  , lastModified  ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?),[10,7,,DSDSDS,,,,,,fdfd,123456,fghf,1,ffdfd,ghjghjkg ghjghjgj,78945612,fghfjgh,ytuyiu,yuiyuio,Male,25,4,451278,45785689,fghf fhgfj gfhfghg ghj,Lajpor,Surat,Siddhigiri,pal,nanpura,hindu,,A,BCA,,30/11/1995,,,,,,2019-02-20 08:22:1010,7,,DSDSDS,,,,,,fdfd,123456,fghf,2,ffdfd,ghjghjkg ghjghjgj,78945612,fghfjgh,ytuyiu,yuiyuio,Male,25,4,451278,45785689,fghf fhgfj gfhfghg ghj,Lajpor,Surat,Siddhigiri,pal,nanpura,hindu,,A,BCA,,30/11/1995,,,,,,2019-02-20 08:22:10]";
-        //        tx.executeSql(sql);
-// tx.executeSql("INSERT INTO data_master (user_id,constituency_id,pc_name,ac_name,mnc,zp,pc,gp,part_no,ward_no,booth_no,booth_name,sr_no,photo,voter_name,mobile_no,relation_name,surname,relation_type,gender,age,house_no,epic_id,card_no,address,village_name,booth_address,society,bibhag,old_town,caste,support,blood_group,education,occupation,birth_date,marriage_date,email,adhar,ration_card,dead,lastModified)VALUES(1,2,'3s','dIVY',1,2,'DDD','nnn',0,1,1,'GFGF',10,'GGG','GFG',8347496266,'FDFGDFD','FDFDFD','FDFDF','male',10,15,31,'FDFD','','','FDFD','','','','','','','','','','','','','','','')");
-   // tx.executeSql("INSERT INTO data_master (user_id,constituency_id,pc_name,ac_name,mnc,zp,pc,gp,part_no,ward_no,booth_no,booth_name,sr_no,photo,voter_name,mobile_no,relation_name,surname,relation_type,gender,age,house_no,epic_id,card_no,address,village_name,booth_address,society,bibhag,old_town,caste,support,blood_group,education,occupation,birth_date,marriage_date,email,adhar,ration_card,dead,lastModified) VALUES ('10','7','gfdrew','DSDSDS','wq','wwqw','wqw','wqq','wq','wfdfd','123456','fghf','2','ffdfd','ghjghjkg ghjghjgj','78945612','fghfjgh','ytuyiu','yuiyuio','Male','25','4','451278','45785689','fghf fhgfj gfhfghg ghj','Lajpor','Surat','Siddhigiri','pal','nanpura','hindu','wq','wqA','BCA','wq','30/11/1995','wq','wq','wqfdzX','dewds','dsdsa','2019-02-20 08:22:10')");
-                 tx.executeSql("select * from data_master",[],function(tx1,result){
-                    var len = result.rows.length;
-                    // alert(len);
-                   if(len > 0){
-                    window.localStorage.setItem("user_id", '1');
-                   }else{
-                     window.localStorage.setItem("user_id", '0');
-                    
-                   }
-                    
-                    
-                },errorCB);
-            }, errorCB, successCB);
 
 
     var user_id = window.localStorage.getItem('user_id');
@@ -209,6 +527,11 @@ $$(document).on('deviceready', function() {
     }
 
 
+      $$(document).on('click', '#sync', function(){  
+ window.localStorage.removeItem('user_id');
+ location.reload();
+
+})
       $$(document).on('click', '#submitdata', function(){  
          form =$('#candidate_register').serialize();
            $('#myOverlay').show();
@@ -269,6 +592,8 @@ $$(document).on('deviceready', function() {
                                     // console.log("INSERT INTO data_master ("+k+") VALUES ("+val+")");
                                    tx.executeSql("INSERT INTO data_master ("+k+") VALUES ("+val+")");
                                     $$('#home').trigger("click");
+                                    window.localStorage.setItem("user_id", '1');
+
                           
                         });
                                   
@@ -290,17 +615,6 @@ $$(document).on('deviceready', function() {
 }, errorCB, successCB);
 
 
-            // var dataas = JSON.stringify(data);
-                   
-//                    alert(data);
-//                   $.each(data.all_data, function(key, item){ 
-
-//                          // var html = '<tr><td>'+key +'</td><td>'+item.user_name+'</td><td>'+item.kill+'</td><td>'+item.winn_prize+'</td></tr>' ; 
-//                          alert(item.user_id);
-//                          alert(item.constituency_id);
-// //tx.executeSql("INSERT INTO data_master (user_id,constituency_id ,pc_name ,ac_name ,mnc ,zp ,pc ,gp ,part_no ,ward_no ,booth_no ,booth_name ,sr_no ,photo ,voter_name ,mobile_no ,relation_name ,surname ,relation_type ,gender ,age ,house_no ,epic_id ,card_no ,address ,village_name ,booth_address ,society ,bibhag ,old_town  ,caste ,support ,blood_group ,education ,occupation ,birth_date ,marriage_date ,email ,adhar ,ration_card ,dead ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [item.user_id,item.constituency_id ,item.pc_name ,item.ac_name ,item.mnc ,item.zp ,item.pc ,item.gp ,item.part_no ,item.ward_no ,item.booth_no ,item.booth_name ,item.sr_no ,item.photo ,item.voter_name ,item.mobile_no ,item.relation_name ,item.surname ,item.relation_type ,item.gender ,item.age ,item.house_no ,item.epic_id ,item.card_no ,item.address ,item.village_name ,item.booth_address ,item.society ,item.bibhag ,item.old_town  ,item.caste ,item.support ,item.blood_group ,item.education ,item.occupation ,item.birth_date ,item.marriage_date ,item.email ,item.adhar ,item.ration_card ,item.dead]);
-//                              // $('#chicken').append(html);
-//                           });
                 }  
            })  
 
@@ -377,8 +691,8 @@ $$(document).on('pageInit', '.page[data-page="namewise"]', function (e) {
     // Following code will be executed for page with data-page attribute equal to "about"
      //myApp.alert('Here comes About page');
   setTimeout(function(){ 
-  fetchData(); }, 300);
-
+    fetchData(); }, 300);
+    
 
       
 
@@ -386,3 +700,212 @@ $$(document).on('pageInit', '.page[data-page="namewise"]', function (e) {
     //myApp.alert(d);
       
 })
+$$(document).on('pageInit', '.page[data-page="alphabeticalwise"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+  setTimeout(function(){ 
+    fetchData('alpha'); }, 300);
+    
+
+      
+})
+$$(document).on('pageInit', '.page[data-page="agewise"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+  setTimeout(function(){ 
+    fetchData(); }, 300);
+    
+
+      
+})
+
+$$(document).on('pageInit', '.page[data-page="addresswise"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+       $$(document).on("click", ".address_click", function(){
+        // var name  = $$(this).attr("data-name");
+        var select_address = $$(this).attr("data-id");
+        // alert(select_address);
+        // app.router.navigate("URL?name=" + name + "&id=" + id);
+         window.localStorage.removeItem('select_caste');
+         window.localStorage.removeItem('select_address');
+         window.localStorage.removeItem('filter');
+         window.localStorage.removeItem('data_type');
+ 
+ 
+
+
+ window.localStorage.setItem("select_address", select_address);
+                    $$('#data_link').trigger("click");
+
+})
+  setTimeout(function(){ 
+    fetchData_addresswise(); }, 300);
+    
+
+      
+})
+$$(document).on('pageInit', '.page[data-page="castewise"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+  setTimeout(function(){ 
+    fetchData_castewise(); }, 300);
+
+  $$(document).on("click", ".caste_click", function(){
+        // var name  = $$(this).attr("data-name");
+        var select_caste = $$(this).attr("data-id");
+        // alert(select_caste);
+        // app.router.navigate("URL?name=" + name + "&id=" + id);
+     window.localStorage.removeItem('select_caste');
+         window.localStorage.removeItem('select_address');
+         window.localStorage.removeItem('filter');
+         window.localStorage.removeItem('data_type');
+ 
+
+
+ window.localStorage.setItem("select_caste", select_caste);
+                    $$('#data_link').trigger("click");
+
+});
+    
+
+      
+})
+$$(document).on('pageInit', '.page[data-page="datalist"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+     var caste = window.localStorage.getItem('select_caste');
+     var address = window.localStorage.getItem('select_address');
+     var filter = window.localStorage.getItem('filter');
+     var data_type = window.localStorage.getItem('data_type');
+// alert(caste);
+     if(caste ){
+      // alert('dd');
+
+
+   str = caste.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+    return letter.toUpperCase();
+});
+
+
+      $('#tittle').html(str);
+     $('#data_type').val('caste');
+       setTimeout(function(){ 
+    fetch_data_list('caste',caste); }, 300);
+     }else if(address){
+     // $('#data_type').val();
+       str = address.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+    return letter.toUpperCase();
+});
+ $('#tittle').html(str);
+     $('#data_type').val('address');
+       setTimeout(function(){ 
+    fetch_data_list('address',address); }, 300);
+     }else if(filter){
+       str = filter.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+    return letter.toUpperCase();
+});
+ $('#tittle').html(str);
+     $('#data_type').val(data_type);
+       setTimeout(function(){ 
+    fetch_data_list(data_type,filter); }, 300);
+     }
+     // alert(caste);
+
+    
+
+      
+})
+
+$$(document).on('pageInit', '.page[data-page="nagarwise"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+       $$(document).on("click", ".filter_click", function(){
+        // var name  = $$(this).attr("data-name");
+        var filter = $$(this).attr("data-id");
+        // alert(select_address);
+        // app.router.navigate("URL?name=" + name + "&id=" + id);
+         window.localStorage.removeItem('select_caste');
+         window.localStorage.removeItem('select_address');
+         window.localStorage.removeItem('filter');
+         window.localStorage.removeItem('data_type');
+ 
+ 
+
+
+ window.localStorage.setItem("filter", filter);
+ window.localStorage.setItem("data_type",'bibhag');
+
+                    $$('#data_link').trigger("click");
+
+})
+  setTimeout(function(){ 
+    filter_data('bibhag',0); }, 300);
+    
+
+      
+})
+
+
+
+$$(document).on('pageInit', '.page[data-page="societywise"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+       $$(document).on("click", ".filter_click", function(){
+        // var name  = $$(this).attr("data-name");
+        var filter = $$(this).attr("data-id");
+        // alert(select_address);
+        // app.router.navigate("URL?name=" + name + "&id=" + id);
+         window.localStorage.removeItem('select_caste');
+         window.localStorage.removeItem('select_address');
+         window.localStorage.removeItem('filter');
+         window.localStorage.removeItem('data_type');
+ 
+ 
+
+
+ window.localStorage.setItem("filter", filter);
+ window.localStorage.setItem("data_type",'society');
+ 
+
+                    $$('#data_link').trigger("click");
+
+})
+  setTimeout(function(){ 
+    filter_data('society',0); }, 300);
+    
+
+      
+})
+$$(document).on('pageInit', '.page[data-page="boothwise"]', function (e) {
+    // Following code will be executed for page with data-page attribute equal to "about"
+     //myApp.alert('Here comes About page');
+       $$(document).on("click", ".filter_click", function(){
+        // var name  = $$(this).attr("data-name");
+        var filter = $$(this).attr("data-id");
+        // alert(select_address);
+        // app.router.navigate("URL?name=" + name + "&id=" + id);
+         window.localStorage.removeItem('select_caste');
+         window.localStorage.removeItem('select_address');
+         window.localStorage.removeItem('filter');
+         window.localStorage.removeItem('data_type');
+ 
+ 
+
+
+ window.localStorage.setItem("filter", filter);
+ window.localStorage.setItem("data_type",'booth_no');
+ 
+
+                    $$('#data_link').trigger("click");
+
+})
+  setTimeout(function(){ 
+    filter_data('booth_no',0); }, 300);
+    
+
+      
+})
+
+
+

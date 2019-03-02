@@ -61,7 +61,7 @@ input.placeholder {
 
 
 <div class="pages">
-    <div data-page="namewise" class="page" >
+    <div data-page="alphabeticalwise" class="page" >
         <div class="page-content" style="padding-top: 43px !important">
             <div class="content-block" style="margin: 0px !important">
       
